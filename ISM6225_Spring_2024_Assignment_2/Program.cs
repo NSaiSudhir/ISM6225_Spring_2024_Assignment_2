@@ -1,4 +1,4 @@
-﻿/* 
+/* 
  
 YOU ARE NOT ALLOWED TO MODIFY ANY FUNCTION DEFINIDTION's PROVIDED.
 WRITE YOUR CODE IN THE RESPECTIVE QUESTION FUNCTION BLOCK
@@ -41,10 +41,18 @@ namespace ISM6225_Spring_2024_Assignment_2
             Console.WriteLine(maxOnes);
 
             //Question 5:
-            Console.WriteLine("Question 5:");
-            int binaryInput = 101010;
-            int decimalResult = BinaryToDecimal(binaryInput);
-            Console.WriteLine(decimalResult);
+            {
+                Console.WriteLine("Question 5:");
+                Console.Write("Please enter a binary number: "); // Prompt the user for input.
+                int binaryInput;
+                // Try to parse the user input as an integer. If parsing fails, prompt again.
+                while (!int.TryParse(Console.ReadLine(), out binaryInput))
+                {
+                    Console.Write("Invalid input. Please enter a valid binary number: ");
+                }
+                int decimalResult = BinaryToDecimal(binaryInput); // Convert the input to decimal.
+                Console.WriteLine(decimalResult); // Display the result.
+            }
 
             //Question 6:
             Console.WriteLine("Question 6:");
@@ -97,16 +105,24 @@ namespace ISM6225_Spring_2024_Assignment_2
 
         public static int RemoveDuplicates(int[] nums)
         {
-            try
-            {
-                // Write your code here and you can modify the return value according to the requirements
-                return 0;
+            if (nums.Length == 0) return 0; // Edge case: empty array.
+
+            int i = 0; // Initialize the pointer for the place to insert the next unique element.
+            for (int j = 1; j < nums.Length; j++)
+            { // Start with the second element.
+                if (nums[j] != nums[i])
+                { // If the current element is different from the last unique element...
+                    i++; // Move to the next position.
+                    nums[i] = nums[j]; // Update the position with the new unique element.
+                }
             }
-            catch (Exception)
-            {
-                throw;
-            }
+            return i + 1; // Return the count of unique elements.
         }
+
+        /*
+         Learning: Reinforces the use of two-pointer technique to solve problems in place, enhancing understanding of array manipulation without additional space.
+         Recommendation: Practice similar problems to master edge cases and optimize pointer movements, crucial for in-place modifications.
+        */
 
         /*
         
@@ -134,14 +150,35 @@ namespace ISM6225_Spring_2024_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return new List<int>();
+                int lastNonZeroFoundAt = 0; // Track the last non-zero element.
+                                            // Loop to push all non-zero elements to the beginning of the array.
+                for (int i = 0; i < nums.Length; i++)
+                {
+                    if (nums[i] != 0)
+                    {
+                        nums[lastNonZeroFoundAt++] = nums[i];
+                    }
+                }
+                // Fill remaining array space with zeros.
+                for (int i = lastNonZeroFoundAt; i < nums.Length; i++)
+                {
+                    nums[i] = 0;
+                }
+                // The requirement suggests modifying the array in place and returning it,
+                // but the method signature expects an IList<int>. 
+                // Convert the array to a list and return it.
+                return nums.ToList();
             }
             catch (Exception)
             {
                 throw;
             }
         }
+
+        /*
+         Learning: Highlights the importance of maintaining element order while performing in-place operations, showcasing the utility of the two-pointer approach.
+         Recommendation: Explore variations, like minimizing write operations, to deepen insights into in-place array transformations.
+         */
 
         /*
 
@@ -185,14 +222,47 @@ namespace ISM6225_Spring_2024_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return new List<IList<int>>();
+                IList<IList<int>> result = new List<IList<int>>();
+                Array.Sort(nums); // First, sort the array to make it easier to navigate.
+
+                for (int i = 0; i < nums.Length - 2; i++)
+                {
+                    if (i > 0 && nums[i] == nums[i - 1]) continue; // Skip duplicate values for 'i'.
+
+                    int left = i + 1, right = nums.Length - 1;
+                    while (left < right)
+                    {
+                        int sum = nums[i] + nums[left] + nums[right];
+                        if (sum == 0)
+                        {
+                            result.Add(new List<int> { nums[i], nums[left], nums[right] });
+                            while (left < right && nums[left] == nums[left + 1]) left++; // Skip duplicates for 'left'.
+                            while (left < right && nums[right] == nums[right - 1]) right--; // Skip duplicates for 'right'.
+                            left++;
+                            right--;
+                        }
+                        else if (sum < 0)
+                        {
+                            left++;
+                        }
+                        else
+                        {
+                            right--;
+                        }
+                    }
+                }
+
+                return result; // Return the collected triplets.
             }
             catch (Exception)
             {
                 throw;
             }
         }
+        /*
+        Learning: Demonstrates the use of sorting as a preprocessing step to simplify the search for element combinations meeting specific criteria.
+        Recommendation: Experiment with different ways to avoid duplicates in the result set, a common challenge in combination problems.\
+        */
 
         /*
 
@@ -220,14 +290,36 @@ namespace ISM6225_Spring_2024_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return 0;
+                int maxConsecutiveOnes = 0;
+                int currentConsecutiveOnes = 0;
+
+                foreach (int num in nums)
+                {
+                    if (num == 1)
+                    {
+                        // Increment the count for the current sequence of ones.
+                        currentConsecutiveOnes++;
+                        // Update maxConsecutiveOnes if the current sequence is longer.
+                        maxConsecutiveOnes = Math.Max(maxConsecutiveOnes, currentConsecutiveOnes);
+                    }
+                    else
+                    {
+                        // Reset the count for the current sequence of ones.
+                        currentConsecutiveOnes = 0;
+                    }
+                }
+
+                return maxConsecutiveOnes; // Return the maximum sequence length found.
             }
             catch (Exception)
             {
                 throw;
             }
         }
+        /*
+        Learning: Offers a straightforward example of iterating through arrays to track sequences, emphasizing conditional logic and counter management.
+        Recommendation: Apply similar patterns to track more complex patterns within arrays, such as alternating sequences. 
+        */
 
         /*
 
@@ -256,14 +348,29 @@ namespace ISM6225_Spring_2024_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return 0;
+                int decimalValue = 0;
+                int baseValue = 1; // Represents 2^0 initially.
+
+                while (binary > 0)
+                {
+                    int lastDigit = binary % 10; // Get the last digit of the binary number.
+                    binary = binary / 10; // Remove the last digit from the binary number.
+
+                    decimalValue += lastDigit * baseValue; // Convert and add the digit's value to the decimalValue.
+                    baseValue = baseValue * 2; // Move to the next power of 2.
+                }
+
+                return decimalValue; // Return the converted decimal value.
             }
             catch (Exception)
             {
                 throw;
             }
         }
+        /*
+         Learning: Encourages understanding of number base systems and reinforces basic arithmetic operations' role in conversions.
+         Recommendation: Try extending the logic to support conversion from other bases to decimal, enhancing versatility in handling number systems.
+        */
 
         /*
 
@@ -294,14 +401,58 @@ namespace ISM6225_Spring_2024_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return 0;
+                // Return 0 for arrays with less than 2 elements as no gap exists.
+                if (nums.Length < 2) return 0;
+
+                // Find minimum and maximum values in the array.
+                int minVal = nums.Min();
+                int maxVal = nums.Max();
+
+                // Calculate the size of each bucket and the number of buckets needed.
+                // The formula ensures at least one number is in each bucket to avoid unnecessary comparisons.
+                // The +1 ensures that max value gets its own bucket at the end.
+                int bucketSize = Math.Max(1, (maxVal - minVal) / (nums.Length - 1));
+                int bucketCount = (maxVal - minVal) / bucketSize + 1;
+
+                // Initialize buckets for storing minimum and maximum values of each bucket.
+                int[] bucketMin = Enumerable.Repeat(int.MaxValue, bucketCount).ToArray();
+                int[] bucketMax = Enumerable.Repeat(int.MinValue, bucketCount).ToArray();
+
+                // Distribute the numbers into buckets
+                foreach (int num in nums)
+                {
+                    int bucketIndex = (num - minVal) / bucketSize;
+                    bucketMin[bucketIndex] = Math.Min(bucketMin[bucketIndex], num);
+                    bucketMax[bucketIndex] = Math.Max(bucketMax[bucketIndex], num);
+                }
+
+                // Calculate the maximum gap by iterating through the buckets.
+                // The gap is the difference between the minimum value of the current bucket
+                // and the maximum value of the previous bucket.
+                int maxGap = 0;
+                int previousMax = bucketMax[0]; // Initialize with the first bucket's max value.
+
+                for (int i = 1; i < bucketCount; i++)
+                {
+                    // Skip empty buckets
+                    if (bucketMin[i] == int.MaxValue) continue;
+
+                    // Update maxGap if the current gap is larger
+                    maxGap = Math.Max(maxGap, bucketMin[i] - previousMax);
+                    previousMax = bucketMax[i]; // Update previousMax for the next iteration.
+                }
+
+                return maxGap; // Return the maximum gap found.
             }
             catch (Exception)
             {
                 throw;
             }
         }
+        /*
+         Learning: Introduces the concept of bucket sort and pigeonhole principle for achieving linear time complexity in sorting-related problems.
+         Recommendation: Investigate other scenarios where bucket sort can be applied, especially where comparison sort approaches are less efficient.
+        */
 
         /*
 
@@ -334,7 +485,22 @@ namespace ISM6225_Spring_2024_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
+                // Step 1: Sort the array in non-decreasing order.
+                Array.Sort(nums);
+
+                // Step 2 & 3: Iterate from the end to find the first set of lengths that can form a triangle.
+                for (int i = nums.Length - 3; i >= 0; i--)
+                {
+                    // Check the triangle inequality theorem: nums[i] + nums[i+1] > nums[i+2]
+                    if (nums[i] + nums[i + 1] > nums[i + 2])
+                    {
+                        // If the condition is true, we found a valid triangle.
+                        // Return its perimeter: sum of its sides.
+                        return nums[i] + nums[i + 1] + nums[i + 2];
+                    }
+                }
+
+                // Step 4: If no valid triangle is found, return 0.
                 return 0;
             }
             catch (Exception)
@@ -342,6 +508,10 @@ namespace ISM6225_Spring_2024_Assignment_2
                 throw;
             }
         }
+        /*
+         *Learning: Applies the triangle inequality theorem in a sorting context to find the largest possible perimeter, emphasizing the importance of sorting in problem-solving.
+          Recommendation: Consider exploring geometric properties and inequalities in other algorithm problems, expanding the application of mathematical principles.
+        */
 
         /*
 
@@ -388,8 +558,20 @@ namespace ISM6225_Spring_2024_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return "";
+                // Continuously replace occurrences of 'part' with an empty string until 'part' can no longer be found in 's'.
+                while (s.Contains(part))
+                {
+                    // Find the index of the first occurrence of 'part' in 's'.
+                    int index = s.IndexOf(part);
+                    if (index != -1)
+                    {
+                        // Remove 'part' from 's' by creating a new string that excludes 'part'.
+                        s = s.Remove(index, part.Length);
+                    }
+                }
+
+                // Return the modified string after all occurrences of 'part' have been removed.
+                return s;
             }
             catch (Exception)
             {
@@ -397,7 +579,6 @@ namespace ISM6225_Spring_2024_Assignment_2
             }
         }
 
-        /* Inbuilt Functions - Don't Change the below functions */
         static string ConvertIListToNestedList(IList<IList<int>> input)
         {
             StringBuilder sb = new StringBuilder();
@@ -439,3 +620,8 @@ namespace ISM6225_Spring_2024_Assignment_2
         }
     }
 }
+
+/*
+ Learning: Showcases iterative string manipulation and the use of search-and-remove operations to modify strings based on pattern matching.
+Recommendation: Explore string manipulation techniques further, including regular expressions and advanced pattern matching for more complex scenarios.
+*/
